@@ -1,0 +1,200 @@
+@switch (section) {
+  @case ('refugios') {
+    <section class="panel">
+      <h2>Gestion de refugios</h2>
+      <div class="split">
+        <div class="cardish">
+          <h3>Listado</h3>
+          <table>
+            <tr><th>Refugio</th><th>Zona</th><th>Contacto</th><th>Estado</th></tr>
+            <tr><td>Huellitas</td><td>Miraflores</td><td>77711122</td><td>Activo</td></tr>
+            <tr><td>Patitas</td><td>Sopocachi</td><td>76543210</td><td>Activo</td></tr>
+            <tr><td>Esperanza Animal</td><td>Obrajes</td><td>70101010</td><td>En revision</td></tr>
+          </table>
+        </div>
+        <div class="cardish">
+          <h3>Que puedes hacer aqui</h3>
+          <ul>
+            <li>Ver refugios registrados.</li>
+            <li>En un siguiente paso: crear/editar refugios (frontend) y sincronizar con backend.</li>
+          </ul>
+          <p class="hint">Tip: usa Donaciones para apoyar a un refugio.</p>
+        </div>
+      </div>
+    </section>
+  }
+
+  @case ('animales') {
+    <section class="panel">
+      <h2>Encuentra un animalito</h2>
+      <p>Filtra por tipo y tamano, abre el detalle y envia tu solicitud.</p>
+      <div class="filters">
+        <label>
+          Tipo
+          <select [(ngModel)]="filtroTipo" name="tipo">
+            <option value="">Todos</option>
+            <option>Perro</option>
+            <option>Gato</option>
+          </select>
+        </label>
+        <label>
+          Tamano
+          <select [(ngModel)]="filtroTamano" name="tamano">
+            <option value="">Todos</option>
+            <option>Pequenio</option>
+            <option>Mediano</option>
+            <option>Grande</option>
+          </select>
+        </label>
+      </div>
+      <div class="pet-grid">
+        @for (pet of filteredPets; track pet.nombre) {
+          <article class="pet-card">
+            <img [src]="pet.imagen" [alt]="'Foto de ' + pet.nombre" />
+            <div class="pet-body">
+              <div class="pet-title">
+                <h3>{{ pet.nombre }}</h3>
+                <span class="tag">{{ pet.tipo }}</span>
+              </div>
+              <p class="pet-meta">{{ pet.edad }} · {{ pet.tamano }} · {{ pet.salud }}</p>
+              <p class="pet-refugio">Refugio: <b>{{ pet.refugio }}</b></p>
+              <div class="pet-actions">
+                <button type="button" (click)="openPetDetail(pet)">Ver detalle</button>
+                <button class="primary" type="button" (click)="startAdoption(pet)">Solicitar adopcion</button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (adoptionOk) {
+        <p class="ok">{{ adoptionOk }}</p>
+      }
+
+      @if (showPetModal && selectedPet) {
+        <div class="modal-backdrop" (click)="closeModals()"></div>
+        <div class="modal" role="dialog" aria-modal="true">
+          <button class="close" type="button" (click)="closeModals()">×</button>
+          <div class="modal-body">
+            <img class="modal-img" [src]="selectedPet.imagen" [alt]="'Foto de ' + selectedPet.nombre" />
+            <div>
+              <h3>{{ selectedPet.nombre }}</h3>
+              <p>{{ selectedPet.tipo }} · {{ selectedPet.edad }} · {{ selectedPet.tamano }}</p>
+              <p><b>Salud:</b> {{ selectedPet.salud }}</p>
+              <p><b>Refugio:</b> {{ selectedPet.refugio }}</p>
+              <div class="pet-actions">
+                <button class="primary" type="button" (click)="startAdoption(selectedPet)">Solicitar adopcion</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (showAdoptionModal && selectedPet) {
+        <div class="modal-backdrop" (click)="closeModals()"></div>
+        <div class="modal" role="dialog" aria-modal="true">
+          <button class="close" type="button" (click)="closeModals()">×</button>
+          <h3>Solicitud de adopcion: {{ selectedPet.nombre }}</h3>
+          <form class="form" (ngSubmit)="submitAdoption()">
+            <label>
+              Nombre del solicitante
+              <input [(ngModel)]="solicitante" name="solicitante" required />
+            </label>
+            <label>
+              Telefono
+              <input [(ngModel)]="telefono" name="telefono" required />
+            </label>
+            <label>
+              Direccion
+              <input [(ngModel)]="direccion" name="direccion" required />
+            </label>
+            <button class="primary" type="submit">Enviar solicitud</button>
+          </form>
+        </div>
+      }
+    </section>
+  }
+
+  @case ('adopciones') {
+    <section class="panel">
+      <h2>Solicitudes de adopcion</h2>
+      <p class="hint">Aqui aparecen las solicitudes que enviaste desde “Animales”.</p>
+      <table>
+        <tr><th>Solicitante</th><th>Mascota</th><th>Refugio</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr>
+        @for (a of getAdoptions(); track a.id) {
+          <tr>
+            <td>{{ a.solicitante }}</td>
+            <td>{{ a.mascota }}</td>
+            <td>{{ a.refugio }}</td>
+            <td>{{ a.fecha }}</td>
+            <td><span class="status" [class.ok]="a.estado==='Aprobada'" [class.bad]="a.estado==='Rechazada'">{{ a.estado }}</span></td>
+            <td class="row-actions">
+              <button type="button" (click)="setAdoptionStatus(a.id, 'Aprobada')">Aprobar</button>
+              <button type="button" (click)="setAdoptionStatus(a.id, 'Rechazada')">Rechazar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6">Aun no hay solicitudes. Ve a “Animales” y presiona “Solicitar adopcion”.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('donaciones') {
+    <section class="panel">
+      <h2>Donaciones</h2>
+      <div class="split">
+        <div class="cardish">
+          <h3>Registrar donacion</h3>
+          <form class="form" (ngSubmit)="submitDonation()">
+            <label>
+              Donante
+              <input [(ngModel)]="donationDonante" name="donationDonante" placeholder="Tu nombre (opcional)" />
+            </label>
+            <label>
+              Tipo
+              <select [(ngModel)]="donationTipo" name="donationTipo">
+                <option value="Economica">Economica</option>
+                <option value="Especie">En especie</option>
+              </select>
+            </label>
+            <label>
+              @if (donationTipo === 'Economica') { Monto (ej. Bs 50) } @else { Detalle (ej. alimento, frazadas) }
+              <input [(ngModel)]="donationDetalle" name="donationDetalle" placeholder="Detalle" />
+            </label>
+            <label>
+              Refugio
+              <select [(ngModel)]="donationRefugio" name="donationRefugio">
+                <option>Refugio Huellitas</option>
+                <option>Refugio Patitas</option>
+                <option>Refugio Esperanza Animal</option>
+              </select>
+            </label>
+            <button class="primary" type="submit">Registrar</button>
+          </form>
+          @if (donationOk) {
+            <p class="ok">{{ donationOk }}</p>
+          }
+        </div>
+
+        <div class="cardish">
+          <h3>Historial (local)</h3>
+          <table>
+            <tr><th>Fecha</th><th>Donante</th><th>Tipo</th><th>Detalle</th><th>Refugio</th></tr>
+            @for (d of getDonations(); track d.id) {
+              <tr>
+                <td>{{ d.fecha }}</td>
+                <td>{{ d.donante }}</td>
+                <td>{{ d.tipo }}</td>
+                <td>{{ d.detalle }}</td>
+                <td>{{ d.refugio }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5">Aun no hay donaciones registradas.</td></tr>
+            }
+          </table>
+        </div>
+      </div>
+    </section>
+  }
+}

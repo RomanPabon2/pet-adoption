@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  color: #0f172a;
+  background:
+    radial-gradient(1000px 600px at 10% 0%, rgba(34, 211, 238, 0.25), transparent 60%),
+    radial-gradient(900px 600px at 90% 10%, rgba(59, 130, 246, 0.22), transparent 55%),
+    radial-gradient(1000px 800px at 40% 110%, rgba(16, 185, 129, 0.18), transparent 55%),
+    #f6f8fc;
+}
+
+.topbar {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #0ea5e9, #22c55e);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.12);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 0.2px;
+}
+
+.brand p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+.login-btn {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.12);
+}
+
+.login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.16);
+}
+
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #0f172a;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.main-nav a:hover {
+  transform: translateY(-1px);
+  background: rgba(226, 232, 240, 0.7);
+}
+
+.main-nav a.active {
+  background: rgba(59, 130, 246, 0.14);
+  outline: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.content-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-btn,
+  .main-nav a {
+    transition: none !important;
+  }
+}

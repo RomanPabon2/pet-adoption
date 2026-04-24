@@ -1,0 +1,26 @@
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <h1>{{ title }}</h1>
+      <p>Encuentra tu companero ideal, apoya refugios y gestiona adopciones.</p>
+    </div>
+    <a class="login-btn" routerLink="/auth">Iniciar sesion</a>
+  </header>
+
+  <nav class="main-nav">
+    <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">Inicio</a>
+    <a routerLink="/refugios" routerLinkActive="active">Refugios</a>
+    <a routerLink="/animales" routerLinkActive="active">Animales</a>
+    <a routerLink="/adopciones" routerLinkActive="active">Adopciones</a>
+    <a routerLink="/donaciones" routerLinkActive="active">Donaciones</a>
+  </nav>
+
+  <main class="content">
+    <div
+      class="content-inner"
+      [@routeFade]="routeKey"
+    >
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,72 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-head">
+      <h2>@if (mode === 'login') { Iniciar sesion } @else { Crear cuenta }</h2>
+      <p>Accede como adoptante, refugio, donante o admin (simulado).</p>
+    </div>
+
+    <div class="tabs">
+      <button type="button" [class.active]="mode === 'login'" (click)="mode = 'login'">Login</button>
+      <button type="button" [class.active]="mode === 'register'" (click)="mode = 'register'">Registro</button>
+    </div>
+
+    @if (mode === 'register') {
+      <form (ngSubmit)="register()">
+        <label>
+          Nombre completo
+          <input [(ngModel)]="fullName" name="fullName" type="text" placeholder="Tu nombre" required />
+        </label>
+
+        <label>
+          Correo
+          <input [(ngModel)]="email" name="email" type="email" placeholder="usuario@correo.com" required />
+        </label>
+
+        <label>
+          Contrasena
+          <input [(ngModel)]="password" name="password" type="password" placeholder="********" required />
+        </label>
+
+        <label>
+          Rol
+          <select [(ngModel)]="role" name="role">
+            <option value="adoptante">Adoptante</option>
+            <option value="refugio">Responsable de refugio</option>
+            <option value="donante">Donante</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </label>
+
+        <button type="submit" class="primary">Crear cuenta</button>
+      </form>
+    } @else {
+      <form (ngSubmit)="login()">
+        <label>
+          Correo
+          <input [(ngModel)]="email" name="email" type="email" placeholder="usuario@correo.com" required />
+        </label>
+
+        <label>
+          Contrasena
+          <input [(ngModel)]="password" name="password" type="password" placeholder="********" required />
+        </label>
+
+        <label>
+          Rol
+          <select [(ngModel)]="role" name="role">
+            <option value="adoptante">Adoptante</option>
+            <option value="refugio">Responsable de refugio</option>
+            <option value="donante">Donante</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </label>
+
+        <button type="submit" class="primary">Ingresar</button>
+      </form>
+    }
+
+    @if (message) {
+      <p class="msg">{{ message }}</p>
+    }
+  </div>
+</section>

@@ -1,0 +1,36 @@
+<section class="dashboard">
+  <div class="hero">
+    <div class="hero-text">
+      <h2>Adopciones con trazabilidad y apoyo a refugios</h2>
+      <p>
+        Explora mascotas disponibles, gestiona solicitudes y registra donaciones en un
+        flujo claro tipo TPS.
+      </p>
+      <div class="hero-actions">
+        <a class="primary" routerLink="/animales">Explorar mascotas</a>
+        <a class="secondary" routerLink="/donaciones">Quiero donar</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="paw">🐾</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    @for (kpi of kpis; track kpi.label) {
+      <article class="card">
+        <h3>{{ kpi.value }}</h3>
+        <p>{{ kpi.label }}</p>
+      </article>
+    }
+  </div>
+
+  <div class="quick-links">
+    <a routerLink="/animales">Buscar mascotas</a>
+    <a routerLink="/adopciones">Gestionar adopciones</a>
+    <a routerLink="/donaciones">Registrar donaciones</a>
+    <a routerLink="/reportes">Ver reportes</a>
+  </div>
+</section>
