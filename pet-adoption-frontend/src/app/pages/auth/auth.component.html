@@ -2,7 +2,7 @@
   <div class="auth-card">
     <div class="auth-head">
       <h2>@if (mode === 'login') { Iniciar sesion } @else { Crear cuenta }</h2>
-      <p>Accede como adoptante, refugio, donante o admin (simulado).</p>
+      <p>Conectado al backend local en http://localhost:3000/api.</p>
     </div>
 
     <div class="tabs">
@@ -28,16 +28,16 @@
         </label>
 
         <label>
-          Rol
-          <select [(ngModel)]="role" name="role">
-            <option value="adoptante">Adoptante</option>
-            <option value="refugio">Responsable de refugio</option>
-            <option value="donante">Donante</option>
-            <option value="admin">Administrador</option>
-          </select>
+          Telefono
+          <input [(ngModel)]="phone" name="phone" type="tel" placeholder="77711122" required />
         </label>
 
-        <button type="submit" class="primary">Crear cuenta</button>
+        <label>
+          Fecha de nacimiento
+          <input [(ngModel)]="birthDate" name="birthDate" type="date" required />
+        </label>
+
+        <button type="submit" class="primary" [disabled]="loading">@if (loading) { Creando... } @else { Crear cuenta }</button>
       </form>
     } @else {
       <form (ngSubmit)="login()">
@@ -51,17 +51,7 @@
           <input [(ngModel)]="password" name="password" type="password" placeholder="********" required />
         </label>
 
-        <label>
-          Rol
-          <select [(ngModel)]="role" name="role">
-            <option value="adoptante">Adoptante</option>
-            <option value="refugio">Responsable de refugio</option>
-            <option value="donante">Donante</option>
-            <option value="admin">Administrador</option>
-          </select>
-        </label>
-
-        <button type="submit" class="primary">Ingresar</button>
+        <button type="submit" class="primary" [disabled]="loading">@if (loading) { Ingresando... } @else { Ingresar }</button>
       </form>
     }
 

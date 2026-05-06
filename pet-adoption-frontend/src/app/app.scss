@@ -44,6 +44,8 @@
   border-radius: 8px;
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font: inherit;
   backdrop-filter: blur(10px);
   transition: transform 140ms ease, box-shadow 140ms ease;
   box-shadow: 0 10px 22px rgba(2, 6, 23, 0.12);
@@ -52,6 +54,19 @@
 .login-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 16px 30px rgba(2, 6, 23, 0.16);
+}
+
+.session-box {
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+  font-weight: 800;
+}
+
+.session-box small {
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.95;
 }
 
 .main-nav {

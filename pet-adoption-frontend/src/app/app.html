@@ -4,15 +4,23 @@
       <h1>{{ title }}</h1>
       <p>Encuentra tu companero ideal, apoya refugios y gestiona adopciones.</p>
     </div>
-    <a class="login-btn" routerLink="/auth">Iniciar sesion</a>
+    @if (session) {
+      <div class="session-box">
+        <span>{{ sessionLabel }}</span>
+        <small>{{ sessionDetail }}</small>
+        <button class="login-btn" type="button" (click)="logout()">Cerrar sesion</button>
+      </div>
+    } @else {
+      <a class="login-btn" routerLink="/auth">{{ sessionLabel }}</a>
+    }
   </header>
 
   <nav class="main-nav">
-    <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">Inicio</a>
-    <a routerLink="/refugios" routerLinkActive="active">Refugios</a>
-    <a routerLink="/animales" routerLinkActive="active">Animales</a>
-    <a routerLink="/adopciones" routerLinkActive="active">Adopciones</a>
-    <a routerLink="/donaciones" routerLinkActive="active">Donaciones</a>
+    @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" [routerLinkActiveOptions]="{ exact: item.path === '/' }" routerLinkActive="active">
+        {{ item.label }}
+      </a>
+    }
   </nav>
 
   <main class="content">

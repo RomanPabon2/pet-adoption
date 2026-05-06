@@ -72,6 +72,11 @@ button.primary {
   color: #fff;
 }
 
+button.primary:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
 .msg {
   margin-top: 0.8rem;
   color: #14532d;

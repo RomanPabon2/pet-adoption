@@ -1,26 +1,321 @@
 @switch (section) {
+  @case ('roles') {
+    <section class="panel">
+      <h2>Roles</h2>
+      <p class="hint">Listado cargado desde <b>/api/roles</b>. El backend valida el permiso <b>roles:obtener</b> con tu token.</p>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/roles</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (loading) {
+        <p class="hint">Cargando roles desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }}</p>
+      }
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitRole()">
+        <input [(ngModel)]="roleForm.codigo" name="roleCodigo" placeholder="Codigo" required />
+        <input [(ngModel)]="roleForm.nom_rol" name="roleNombre" placeholder="Nombre" required />
+        <input [(ngModel)]="roleForm.descrip_rol" name="roleDescripcion" placeholder="Descripcion" required />
+        <button class="primary" type="submit">{{ roleEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (roleEditId) {
+          <button type="button" (click)="cancelRole()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Codigo</th><th>Nombre</th><th>Descripcion</th><th>Acciones</th></tr>
+        @for (role of roles; track role.id_rol) {
+          <tr>
+            <td>{{ role.id_rol }}</td><td>{{ role.codigo }}</td><td>{{ role.nom_rol }}</td><td>{{ role.descrip_rol }}</td>
+            <td class="row-actions"><button type="button" (click)="editRole(role)">Editar</button><button type="button" (click)="deleteRole(role.id_rol)">Eliminar</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5">No hay roles para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('permisos') {
+    <section class="panel">
+      <h2>Permisos</h2>
+      <p class="hint">Listado cargado desde <b>/api/permisos</b>. El backend valida el permiso <b>permisos:obtener</b> con tu token.</p>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/permisos</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (loading) {
+        <p class="hint">Cargando permisos desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }}</p>
+      }
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitPermiso()">
+        <input [(ngModel)]="permisoForm.codigo" name="permisoCodigo" placeholder="Codigo" required />
+        <input [(ngModel)]="permisoForm.nombre" name="permisoNombre" placeholder="Nombre" required />
+        <button class="primary" type="submit">{{ permisoEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (permisoEditId) {
+          <button type="button" (click)="cancelPermiso()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Codigo</th><th>Nombre</th><th>Acciones</th></tr>
+        @for (permiso of permisos; track permiso.id_per) {
+          <tr>
+            <td>{{ permiso.id_per }}</td><td>{{ permiso.codigo }}</td><td>{{ permiso.nombre }}</td>
+            <td class="row-actions"><button type="button" (click)="editPermiso(permiso)">Editar</button><button type="button" (click)="deletePermiso(permiso.id_per)">Eliminar</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4">No hay permisos para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('usuarios') {
+    <section class="panel">
+      <h2>Usuarios</h2>
+      <p class="hint">Listado cargado desde <b>/api/usuarios</b>. El backend valida el permiso <b>usuarios:obtener</b> con tu token.</p>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/usuarios</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (loading) {
+        <p class="hint">Cargando usuarios desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }}</p>
+      }
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitUsuario()">
+        <input [(ngModel)]="usuarioForm.nom_usu" name="usuarioNombre" placeholder="Nombre" required />
+        <input [(ngModel)]="usuarioForm.apell_usu" name="usuarioApellido" placeholder="Apellido" required />
+        <input [(ngModel)]="usuarioForm.email_usu" name="usuarioEmail" type="email" placeholder="Correo" required />
+        <input [(ngModel)]="usuarioForm.numcel_usu" name="usuarioCelular" placeholder="Celular" required />
+        <input [(ngModel)]="usuarioForm.fecnac_usu" name="usuarioFecha" type="date" [required]="!usuarioEditId" />
+        <input [(ngModel)]="usuarioForm.pass_usu" name="usuarioPassword" type="password" [placeholder]="usuarioEditId ? 'Nueva contrasena (opcional)' : 'Contrasena'" [required]="!usuarioEditId" />
+        <select [(ngModel)]="usuarioForm.id_rol" name="usuarioRol" required>
+          <option [ngValue]="0">Selecciona rol</option>
+          @for (role of roles; track role.id_rol) {
+            <option [ngValue]="role.id_rol">{{ role.nom_rol }}</option>
+          }
+        </select>
+        <select [(ngModel)]="usuarioForm.id_ref" name="usuarioRefugio">
+          <option [ngValue]="null">Sin refugio</option>
+          @for (refugio of refugios; track refugio.id_ref) {
+            <option [ngValue]="refugio.id_ref">{{ refugio.nom_ref }}</option>
+          }
+        </select>
+        <button class="primary" type="submit">{{ usuarioEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (usuarioEditId) {
+          <button type="button" (click)="cancelUsuario()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Telefono</th><th>Rol</th><th>Refugio</th><th>Acciones</th></tr>
+        @for (usuario of usuarios; track usuario.id_usu) {
+          <tr>
+            <td>{{ usuario.id_usu }}</td>
+            <td>{{ usuario.nom_usu }} {{ usuario.apell_usu }}</td>
+            <td>{{ usuario.email_usu }}</td>
+            <td>{{ usuario.numcel_usu }}</td>
+            <td>{{ usuario.rol?.nom_rol ?? usuario.id_rol }}</td>
+            <td>{{ usuario.refugio?.nom_ref ?? 'Sin refugio' }}</td>
+            <td class="row-actions"><button type="button" (click)="editUsuario(usuario)">Editar</button><button type="button" (click)="deleteUsuario(usuario.id_usu)">Eliminar</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7">No hay usuarios para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('trabajadores') {
+    <section class="panel">
+      <h2>Trabajadores de mi refugio</h2>
+      <p class="hint">Listado cargado desde <b>/api/usuarios/trabajadores/mis-trabajadores</b>.</p>
+      @if (loading) {
+        <p class="hint">Cargando trabajadores desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }}</p>
+      }
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitUsuario()">
+        <input [(ngModel)]="usuarioForm.nom_usu" name="trabajadorNombre" placeholder="Nombre" required />
+        <input [(ngModel)]="usuarioForm.apell_usu" name="trabajadorApellido" placeholder="Apellido" required />
+        <input [(ngModel)]="usuarioForm.email_usu" name="trabajadorEmail" type="email" placeholder="Correo" required />
+        <input [(ngModel)]="usuarioForm.numcel_usu" name="trabajadorCelular" placeholder="Celular" required />
+        <input [(ngModel)]="usuarioForm.fecnac_usu" name="trabajadorFecha" type="date" required />
+        <input [(ngModel)]="usuarioForm.pass_usu" name="trabajadorPassword" type="password" placeholder="Contrasena" required />
+        <select [(ngModel)]="usuarioForm.id_ref" name="trabajadorRefugio" required>
+          @for (refugio of refugios; track refugio.id_ref) {
+            <option [ngValue]="refugio.id_ref">{{ refugio.nom_ref }}</option>
+          }
+        </select>
+        <button class="primary" type="submit">Crear trabajador</button>
+      </form>
+      <table>
+        <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Telefono</th><th>Refugio</th><th>Acciones</th></tr>
+        @for (usuario of usuarios; track usuario.id_usu) {
+          <tr>
+            <td>{{ usuario.id_usu }}</td>
+            <td>{{ usuario.nom_usu }} {{ usuario.apell_usu }}</td>
+            <td>{{ usuario.email_usu }}</td>
+            <td>{{ usuario.numcel_usu }}</td>
+            <td>{{ usuario.refugio?.nom_ref ?? 'Sin refugio' }}</td>
+            <td class="row-actions">Gestionado por permisos del backend</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6">No hay trabajadores para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('mascotas') {
+    <section class="panel">
+      <h2>Mascotas</h2>
+      <p class="hint">Listado administrativo cargado desde <b>/api/mascotas</b>. El backend valida el permiso <b>mascotas:obtener</b> con tu token.</p>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/mascotas</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (loading) {
+        <p class="hint">Cargando mascotas desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }}</p>
+      }
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitMascota()">
+        <input [(ngModel)]="mascotaForm.nom_mascot" name="mascotaNombre" placeholder="Nombre" required />
+        <input [(ngModel)]="mascotaForm.fechanac_mascot" name="mascotaFecha" type="date" required />
+        <select [(ngModel)]="mascotaForm.sexo_mascot" name="mascotaSexo" required>
+          <option>Macho</option>
+          <option>Hembra</option>
+        </select>
+        <select [(ngModel)]="mascotaForm.id_raza" name="mascotaRaza" required>
+          <option [ngValue]="0">Selecciona raza</option>
+          @for (raza of razas; track raza.id_raza) {
+            <option [ngValue]="raza.id_raza">{{ raza.nom_raza }} - {{ raza.especie?.nom_esp }}</option>
+          }
+        </select>
+        <label class="check"><input [(ngModel)]="mascotaForm.esteril_mascot" name="mascotaEsteril" type="checkbox" /> Esterilizada</label>
+        <input [(ngModel)]="mascotaForm.caract_mascot" name="mascotaCaracteristicas" placeholder="Caracteristicas" required />
+        <button class="primary" type="submit">{{ mascotaEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (mascotaEditId) {
+          <button type="button" (click)="cancelMascota()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Nombre</th><th>Raza</th><th>Especie</th><th>Sexo</th><th>Estado</th><th>Acciones</th></tr>
+        @for (mascota of mascotas; track mascota.id_ani) {
+          <tr>
+            <td>{{ mascota.id_ani }}</td><td>{{ mascota.nom_mascot }}</td><td>{{ mascota.raza?.nom_raza }}</td><td>{{ mascota.raza?.especie?.nom_esp }}</td><td>{{ mascota.sexo_mascot }}</td><td>{{ mascota.esteril_mascot ? 'Esterilizada' : 'No esterilizada' }}</td>
+            <td class="row-actions"><button type="button" (click)="editMascota(mascota)">Editar</button><button type="button" (click)="deleteMascota(mascota.id_ani)">Eliminar</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7">No hay mascotas para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
   @case ('refugios') {
     <section class="panel">
       <h2>Gestion de refugios</h2>
-      <div class="split">
-        <div class="cardish">
-          <h3>Listado</h3>
-          <table>
-            <tr><th>Refugio</th><th>Zona</th><th>Contacto</th><th>Estado</th></tr>
-            <tr><td>Huellitas</td><td>Miraflores</td><td>77711122</td><td>Activo</td></tr>
-            <tr><td>Patitas</td><td>Sopocachi</td><td>76543210</td><td>Activo</td></tr>
-            <tr><td>Esperanza Animal</td><td>Obrajes</td><td>70101010</td><td>En revision</td></tr>
-          </table>
-        </div>
-        <div class="cardish">
-          <h3>Que puedes hacer aqui</h3>
-          <ul>
-            <li>Ver refugios registrados.</li>
-            <li>En un siguiente paso: crear/editar refugios (frontend) y sincronizar con backend.</li>
-          </ul>
-          <p class="hint">Tip: usa Donaciones para apoyar a un refugio.</p>
-        </div>
-      </div>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/refugios</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (formMessage) {
+        <p class="ok">{{ formMessage }}</p>
+      }
+      <form class="form crud-form" (ngSubmit)="submitRefugio()">
+        <input [(ngModel)]="refugioForm.nom_ref" name="refugioNombre" placeholder="Nombre" required />
+        <input [(ngModel)]="refugioForm.direc_ref" name="refugioDireccion" placeholder="Direccion" required />
+        <input [(ngModel)]="refugioForm.telef_ref" name="refugioTelefono" placeholder="Telefono" required />
+        <input [(ngModel)]="refugioForm.email_ref" name="refugioEmail" type="email" placeholder="Correo" required />
+        <label class="check"><input [(ngModel)]="refugioForm.estado_ref" name="refugioEstado" type="checkbox" /> Activo</label>
+        <button class="primary" type="submit">{{ refugioEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (refugioEditId) {
+          <button type="button" (click)="cancelRefugio()">Cancelar</button>
+        }
+      </form>
+      @if (loading) {
+        <p class="hint">Cargando refugios desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }} Se muestra informacion local.</p>
+      }
+      <table>
+        <tr><th>ID</th><th>Refugio</th><th>Direccion</th><th>Contacto</th><th>Estado</th><th>Acciones</th></tr>
+        @for (refugio of refugios; track refugio.id_ref) {
+          <tr>
+            <td>{{ refugio.id_ref }}</td><td>{{ refugio.nom_ref }}</td><td>{{ refugio.direc_ref }}</td><td>{{ refugio.telef_ref }}</td><td>{{ refugio.estado_ref ? 'Activo' : 'Inactivo' }}</td>
+            <td class="row-actions"><button type="button" (click)="editRefugio(refugio)">Editar</button><button type="button" (click)="deleteRefugio(refugio.id_ref)">Eliminar</button></td>
+          </tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('especies') {
+    <section class="panel">
+      <h2>Especies</h2>
+      <p class="hint">CRUD conectado a <b>/api/especies</b>.</p>
+      @if (loading) { <p class="hint">Cargando especies desde backend...</p> }
+      @if (apiMessage) { <p class="warn">{{ apiMessage }}</p> }
+      @if (formMessage) { <p class="ok">{{ formMessage }}</p> }
+      <form class="form crud-form" (ngSubmit)="submitEspecie()">
+        <input [(ngModel)]="especieForm.nom_esp" name="especieNombre" placeholder="Nombre de especie" required />
+        <button class="primary" type="submit">{{ especieEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (especieEditId) {
+          <button type="button" (click)="cancelEspecie()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr>
+        @for (especie of especies; track especie.id_esp) {
+          <tr><td>{{ especie.id_esp }}</td><td>{{ especie.nom_esp }}</td><td class="row-actions"><button type="button" (click)="editEspecie(especie)">Editar</button><button type="button" (click)="deleteEspecie(especie.id_esp)">Eliminar</button></td></tr>
+        } @empty {
+          <tr><td colspan="3">No hay especies para mostrar.</td></tr>
+        }
+      </table>
+    </section>
+  }
+
+  @case ('razas') {
+    <section class="panel">
+      <h2>Razas</h2>
+      <p class="hint">CRUD conectado a <b>/api/razas</b>.</p>
+      @if (loading) { <p class="hint">Cargando razas desde backend...</p> }
+      @if (apiMessage) { <p class="warn">{{ apiMessage }}</p> }
+      @if (formMessage) { <p class="ok">{{ formMessage }}</p> }
+      <form class="form crud-form" (ngSubmit)="submitRaza()">
+        <input [(ngModel)]="razaForm.nom_raza" name="razaNombre" placeholder="Nombre de raza" required />
+        <select [(ngModel)]="razaForm.id_esp" name="razaEspecie" required>
+          <option [ngValue]="0">Selecciona especie</option>
+          @for (especie of especies; track especie.id_esp) {
+            <option [ngValue]="especie.id_esp">{{ especie.nom_esp }}</option>
+          }
+        </select>
+        <button class="primary" type="submit">{{ razaEditId ? 'Actualizar' : 'Crear' }}</button>
+        @if (razaEditId) {
+          <button type="button" (click)="cancelRaza()">Cancelar</button>
+        }
+      </form>
+      <table>
+        <tr><th>ID</th><th>Raza</th><th>Especie</th><th>Acciones</th></tr>
+        @for (raza of razas; track raza.id_raza) {
+          <tr><td>{{ raza.id_raza }}</td><td>{{ raza.nom_raza }}</td><td>{{ raza.especie?.nom_esp }}</td><td class="row-actions"><button type="button" (click)="editRaza(raza)">Editar</button><button type="button" (click)="deleteRaza(raza.id_raza)">Eliminar</button></td></tr>
+        } @empty {
+          <tr><td colspan="4">No hay razas para mostrar.</td></tr>
+        }
+      </table>
     </section>
   }
 
@@ -28,6 +323,14 @@
     <section class="panel">
       <h2>Encuentra un animalito</h2>
       <p>Filtra por tipo y tamano, abre el detalle y envia tu solicitud.</p>
+      <p class="hint">Request: <code>GET {{ apiBaseUrl }}/mascotas</code></p>
+      <p class="hint">Token: <code>{{ tokenPreview }}</code></p>
+      @if (loading) {
+        <p class="hint">Cargando mascotas desde backend...</p>
+      }
+      @if (apiMessage) {
+        <p class="warn">{{ apiMessage }} Se muestra informacion local.</p>
+      }
       <div class="filters">
         <label>
           Tipo
@@ -165,9 +468,9 @@
             <label>
               Refugio
               <select [(ngModel)]="donationRefugio" name="donationRefugio">
-                <option>Refugio Huellitas</option>
-                <option>Refugio Patitas</option>
-                <option>Refugio Esperanza Animal</option>
+                @for (shelter of shelterNames; track shelter) {
+                  <option>{{ shelter }}</option>
+                }
               </select>
             </label>
             <button class="primary" type="submit">Registrar</button>

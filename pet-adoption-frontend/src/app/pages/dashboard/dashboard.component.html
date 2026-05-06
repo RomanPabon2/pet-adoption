@@ -7,7 +7,7 @@
         flujo claro tipo TPS.
       </p>
       <div class="hero-actions">
-        <a class="primary" routerLink="/animales">Explorar mascotas</a>
+        <a class="primary" routerLink="/mascotas">Explorar mascotas</a>
         <a class="secondary" routerLink="/donaciones">Quiero donar</a>
       </div>
     </div>
@@ -27,8 +27,12 @@
     }
   </div>
 
+  @if (apiMessage) {
+    <p class="backend-note">{{ apiMessage }}</p>
+  }
+
   <div class="quick-links">
-    <a routerLink="/animales">Buscar mascotas</a>
+    <a routerLink="/mascotas">Buscar mascotas</a>
     <a routerLink="/adopciones">Gestionar adopciones</a>
     <a routerLink="/donaciones">Registrar donaciones</a>
     <a routerLink="/reportes">Ver reportes</a>

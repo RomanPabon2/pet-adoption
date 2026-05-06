@@ -75,9 +75,32 @@ select {
   color: #14532d;
 }
 
+.warn {
+  margin-top: 0.8rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
 .form {
   display: grid;
   gap: 0.75rem;
+}
+
+.crud-form {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+  margin: 1rem 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 40px;
 }
 
 .form input,
